@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<!-- Mobile-first: fit the device width, no user zoom lock so text stays accessible -->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#000000" />
+<title>FIRE 3x3 FIBA Tournament — Team Registration</title>
+<meta name="description" content="Register your team for the FIRE 3x3 FIBA Tournament at the University of Ghana Basketball Court." />
+
+<!-- ================= FONTS =================
+     Anton = bold sporty display heading. Inter = clean readable body. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+/* =======================================================================
+   FIRE 3x3 FIBA TOURNAMENT — single-file registration site
+   Ghana flag colours (red/gold/green) on a dark street-basketball look.
+   ======================================================================= */
+
+/* ----- Design tokens ----- */
+:root {
+  --red:    #CE1126;
+  --gold:   #FCD116;
+  --green:  #006B3F;
+  --black:  #0a0a0a;
+  --panel:  #15161a;      /* card surface */
+  --panel-2:#1d1f25;      /* inputs / nested surface */
+  --line:   #2a2c33;      /* borders */
+  --white:  #ffffff;
+  --muted:  #b7bac2;      /* secondary text */
+  --error:  #ff6b6b;
+  --radius: 14px;
+  --gap:    16px;
+  --maxw:   560px;        /* comfortable single-column width */
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(206,17,38,.18), transparent 60%),
+    radial-gradient(900px 500px at 100% 10%, rgba(0,107,63,.16), transparent 55%),
+    var(--black);
+  color: var(--white);
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  min-height: 100vh;
+}
+
+/* Thin tricolour stripe anchored to the top of the page */
+.flagbar {
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--red) 0 33.33%, var(--gold) 33.33% 66.66%, var(--green) 66.66% 100%);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 20px 16px 48px;   /* 16px side gutter on phones */
+}
+
+/* ----- Header / event details ----- */
+.logo-slot {
+  width: 96px; height: 96px;
+  margin: 8px auto 14px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--panel);
+  border: 2px dashed var(--gold);
+  color: var(--gold);
+  font-family: 'Anton', sans-serif;
+  font-size: 13px;
+  letter-spacing: .5px;
+  text-align: center;
+  overflow: hidden;
+}
+.logo-slot img { width: 100%; height: 100%; object-fit: cover; }
+
+h1.title {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: clamp(30px, 9vw, 46px);
+  line-height: .98;
+  letter-spacing: .5px;
+  text-align: center;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+h1.title .fire { color: var(--red); }
+h1.title .three { color: var(--gold); }
+
+.subtitle { text-align: center; color: var(--muted); margin: 0 0 18px; font-size: 14px; }
+.subtitle strong { color: var(--white); }
+
+/* Event fact chips */
+.facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.fact {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.fact .k { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--gold); margin-bottom: 2px; }
+.fact .v { font-size: 14px; font-weight: 600; }
+.fact.wide { grid-column: 1 / -1; }
+
+.prize {
+  background: linear-gradient(135deg, rgba(252,209,22,.16), rgba(0,107,63,.14));
+  border: 1px solid var(--gold);
+  text-align: center;
+}
+.prize .v { font-size: 20px; color: var(--gold); font-family: 'Anton', sans-serif; letter-spacing: .5px; }
+
+/* ----- Live counter ----- */
+.counter {
+  display: flex; gap: 10px; margin-bottom: 20px;
+}
+.counter .box {
+  flex: 1; text-align: center;
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; padding: 10px 6px;
+}
+.counter .num { font-family: 'Anton', sans-serif; font-size: 26px; line-height: 1; }
+.counter .box.men .num { color: var(--red); }
+.counter .box.women .num { color: var(--green); }
+.counter .box.total .num { color: var(--gold); }
+.counter .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); margin-top: 4px; }
+
+/* ----- Generic card / section ----- */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  margin-bottom: 18px;
+}
+.section-h {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+}
+.section-h .n {
+  display: inline-grid; place-items: center;
+  width: 26px; height: 26px; margin-right: 8px;
+  border-radius: 7px; background: var(--red); color: #fff;
+  font-size: 15px; vertical-align: middle;
+}
+.section-sub { color: var(--muted); font-size: 13px; margin: 0 0 14px; }
+
+/* ----- Payment box (highlighted, before the form) ----- */
+.pay {
+  background: linear-gradient(180deg, rgba(206,17,38,.12), rgba(21,22,26,1) 70%);
+  border: 2px solid var(--gold);
+}
+.pay .section-h .n { background: var(--gold); color: #000; }
+.pay-row { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+.pay-row:last-of-type { border-bottom: none; }
+.pay-row .k { color: var(--muted); }
+.pay-row .v { font-weight: 700; text-align: right; }
+.momo-line { display: flex; align-items: center; gap: 10px; justify-content: space-between; margin: 6px 0 12px; }
+.momo-number { font-family: 'Anton', sans-serif; font-size: 24px; letter-spacing: 1px; color: var(--gold); }
+.pay-note {
+  margin-top: 12px; font-size: 13px; color: var(--white);
+  background: rgba(0,0,0,.35); border-left: 3px solid var(--red);
+  padding: 10px 12px; border-radius: 8px;
+}
+
+/* ----- Form controls ----- */
+label.field { display: block; margin-bottom: 14px; }
+label.field > .lab { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+label.field > .lab .req { color: var(--red); }
+label.field > .lab .opt { color: var(--muted); font-weight: 400; }
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 13px 14px;
+  font-size: 16px;            /* >=16px stops iOS zoom-on-focus */
+  font-family: inherit;
+  color: var(--white);
+  background: var(--panel-2);
+  border: 1.5px solid var(--line);
+  border-radius: 11px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+input:focus, select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(252,209,22,.18);
+}
+input[readonly] { opacity: .75; cursor: not-allowed; }
+input.invalid, select.invalid { border-color: var(--error); box-shadow: 0 0 0 3px rgba(255,107,107,.15); }
+
+.err-msg { display: none; color: var(--error); font-size: 12.5px; margin-top: 5px; }
+.err-msg.show { display: block; }
+
+/* Radio group (division) */
+.radio-row { display: flex; gap: 10px; }
+.radio-opt {
+  flex: 1;
+  position: relative;
+}
+.radio-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.radio-opt .pill {
+  display: block; text-align: center;
+  padding: 13px 8px; border-radius: 11px;
+  background: var(--panel-2); border: 1.5px solid var(--line);
+  font-weight: 700; cursor: pointer; transition: .15s;
+}
+.radio-opt input:checked + .pill { border-color: var(--gold); background: rgba(252,209,22,.14); color: var(--gold); }
+.radio-opt input:focus-visible + .pill { box-shadow: 0 0 0 3px rgba(252,209,22,.25); }
+
+/* Checkbox rows */
+.check {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 14px; margin-bottom: 12px; cursor: pointer;
+}
+.check input { width: 20px; height: 20px; margin: 1px 0 0; flex: 0 0 auto; accent-color: var(--gold); }
+.check.agree { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+
+/* Player blocks */
+.player {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.player > .phead { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .4px; }
+.player > .phead .sub { color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ----- Buttons ----- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  padding: 15px 18px;
+  font-family: 'Anton', sans-serif;
+  font-size: 18px; letter-spacing: .5px;
+  border: none; border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .06s ease, filter .15s;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--red); color: #fff; }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-gold { background: var(--gold); color: #000; }
+.btn-green { background: var(--green); color: #fff; }
+.btn-ghost { background: transparent; color: var(--white); border: 1.5px solid var(--line); font-family: 'Inter'; font-weight: 700; font-size: 15px; }
+.btn[disabled] { opacity: .55; cursor: not-allowed; filter: grayscale(.3); }
+
+.btn-copy {
+  width: auto; padding: 9px 14px; font-size: 13px; font-family: 'Inter'; font-weight: 700;
+  background: var(--gold); color: #000; border-radius: 9px; border: none; cursor: pointer;
+  flex: 0 0 auto;
+}
+.btn-copy.copied { background: var(--green); color: #fff; }
+
+.btn-row { display: flex; gap: 10px; }
+.btn-row .btn { flex: 1; }
+
+/* ----- Views ----- */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ----- Review step ----- */
+.review-block { margin-bottom: 16px; }
+.review-block h3 {
+  font-size: 12px; text-transform: uppercase; letter-spacing: .6px;
+  color: var(--gold); margin: 0 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 6px;
+}
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; font-size: 14px; }
+.kv .k { color: var(--muted); flex: 0 0 auto; }
+.kv .v { text-align: right; font-weight: 600; word-break: break-word; }
+
+/* ----- Confirmation ----- */
+.confirm-badge {
+  text-align: center; padding: 20px 0 10px;
+}
+.confirm-badge .check-ic {
+  width: 64px; height: 64px; margin: 0 auto 12px;
+  border-radius: 50%; background: var(--green); display: grid; place-items: center;
+  font-size: 34px;
+}
+.reg-code {
+  font-family: 'Anton', sans-serif; font-size: 34px; letter-spacing: 2px;
+  color: var(--gold); text-align: center; margin: 6px 0;
+}
+.status-tag {
+  display: inline-block; margin: 0 auto 4px; padding: 6px 14px; border-radius: 999px;
+  background: rgba(252,209,22,.15); color: var(--gold); border: 1px solid var(--gold);
+  font-size: 13px; font-weight: 700;
+}
+.center { text-align: center; }
+
+/* ----- Banners ----- */
+.banner {
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; font-size: 14px;
+  display: none;
+}
+.banner.show { display: block; }
+.banner.err { background: rgba(206,17,38,.15); border: 1px solid var(--red); color: #ffd4d9; }
+.banner.ok  { background: rgba(0,107,63,.15);  border: 1px solid var(--green); color: #c9f3dd; }
+
+/* ----- Closed mode ----- */
+.closed-card { text-align: center; }
+.closed-card .big { font-family: 'Anton', sans-serif; font-size: 30px; color: var(--red); margin: 10px 0; text-transform: uppercase; }
+
+/* ----- Footer ----- */
+footer {
+  text-align: center; padding: 26px 16px 36px; color: var(--muted); font-size: 13px;
+  border-top: 1px solid var(--line); margin-top: 10px;
+}
+footer .slogan { font-family: 'Anton', sans-serif; font-size: 18px; letter-spacing: 1px; color: var(--white); margin-bottom: 4px; }
+footer .peace { color: var(--gold); }
+
+/* Spinner inside submit button */
+.spinner {
+  width: 18px; height: 18px; border: 3px solid rgba(255,255,255,.35);
+  border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.help-link { color: var(--gold); text-decoration: none; font-weight: 600; }
+.help-link:hover { text-decoration: underline; }
+
+.small { font-size: 12.5px; color: var(--muted); }
+</style>
+</head>
+
+<body>
+<div class="flagbar"></div>
+
+<div class="wrap">
+
+  <!-- ============ HEADER / EVENT DETAILS ============ -->
+  <header>
+    <!-- Drop your logo here: replace this div's contents with <img src="logo.png" alt="FIRE logo"> -->
+    <div class="logo-slot" id="logoSlot">LOGO<br>HERE</div>
+
+    <h1 class="title"><span class="fire">FIRE</span> <span class="three">3x3</span> FIBA</h1>
+    <p class="subtitle">
+      Organized by <strong>F.I.R.E.</strong> — Free Inspiration Reaching Everyone<br>
+      Sponsored by <strong>Inspiration Weekend</strong>
+    </p>
+
+    <div class="facts">
+      <div class="fact"><div class="k">Date</div><div class="v">Wed, Dec 9th</div></div>
+      <div class="fact"><div class="k">Divisions</div><div class="v">Men's & Women's</div></div>
+      <div class="fact wide"><div class="k">Venue</div><div class="v">University of Ghana Basketball Court</div></div>
+      <div class="fact"><div class="k">Entry Fee</div><div class="v">GH₵200 / team</div></div>
+      <div class="fact"><div class="k">Deadline</div><div class="v" id="deadlineFact">[DEADLINE DATE]</div></div>
+      <div class="fact wide prize"><div class="k">Cash Prize</div><div class="v">GH₵2,500 for the winning team</div></div>
+    </div>
+
+    <!-- Live counter, read from the Google Sheet -->
+    <div class="counter" id="counter">
+      <div class="box men"><div class="num" id="cMen">–</div><div class="lbl">Men's teams</div></div>
+      <div class="box women"><div class="num" id="cWomen">–</div><div class="lbl">Women's teams</div></div>
+      <div class="box total"><div class="num" id="cTotal">–</div><div class="lbl">Total</div></div>
+    </div>
+  </header>
+
+  <!-- ============ CLOSED-MODE VIEW ============ -->
+  <section class="view" id="closedView">
+    <div class="card closed-card">
+      <div class="big">Registration Closed</div>
+      <p>Team registration for the FIRE 3x3 FIBA Tournament is now closed. Thank you for the love! 🏀</p>
+      <p class="small">Questions? Message us on WhatsApp:
+        <a class="help-link" id="closedHelp" href="#">chat now</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ FORM VIEW (payment + registration) ============ -->
+  <section class="view active" id="formView">
+
+    <!-- Payment instructions (highlighted, BEFORE the form) -->
+    <div class="card pay">
+      <h2 class="section-h"><span class="n">₵</span>Pay First, Then Register</h2>
+      <p class="section-sub">There's no online payment. Send the fee by Mobile Money, then enter the transaction ID below.</p>
+
+      <div class="momo-line">
+        <span class="momo-number" id="momoNumber">[MOMO NUMBER]</span>
+        <button type="button" class="btn-copy" id="copyMomo">Copy number</button>
+      </div>
+
+      <div class="pay-row"><span class="k">Amount</span><span class="v">GH₵200</span></div>
+      <div class="pay-row"><span class="k">Network</span><span class="v" id="payNetwork">[MTN / Telecel / AirtelTigo]</span></div>
+      <div class="pay-row"><span class="k">Account name</span><span class="v" id="payAccount">[MOMO ACCOUNT NAME]</span></div>
+      <div class="pay-row"><span class="k">Reference</span><span class="v">Your TEAM NAME</span></div>
+
+      <div class="pay-note">
+        📌 Keep your MoMo confirmation SMS. Registration is only confirmed <strong>after we verify your payment</strong>.
+      </div>
+    </div>
+
+    <!-- Error banner for submit-time problems (e.g. duplicate txn ID, network) -->
+    <div class="banner err" id="formError"></div>
+
+    <form id="regForm" novalidate>
+
+      <!-- ===== Section 1 — Team ===== -->
+      <div class="card">
+        <h2 class="section-h"><span class="n">1</span>Your Team</h2>
+
+        <label class="field">
+          <span class="lab">Team name <span class="req">*</span></span>
+          <input type="text" id="teamName" name="teamName" autocomplete="off" maxlength="60" />
+          <span class="err-msg" data-for="teamName">Please enter your team name.</span>
+        </label>
+
+        <label class="field" style="margin-bottom:6px">
+          <span class="lab">Division <span class="req">*</span></span>
+        </label>
+        <div class="radio-row" id="divisionRow">
+          <label class="radio-opt">
+            <input type="radio" name="division" value="Men's" />
+            <span class="pill">Men's</span>
+          </label>
+          <label class="radio-opt">
+            <input type="radio" name="division" value="Women's" />
+            <span class="pill">Women's</span>
+          </label>
+        </div>
+        <span class="err-msg" data-for="division">Please choose a division.</span>
+      </div>
+
+      <!-- ===== Section 2 — Captain ===== -->
+      <div class="card">
+        <h2 class="section-h"><span class="n">2</span>Team Captain</h2>
+
+        <label class="field">
+          <span class="lab">Full name <span class="req">*</span></span>
+          <input type="text" id="captainName" name="captainName" autocomplete="name" maxlength="60" />
+          <span class="err-msg" data-for="captainName">Please enter the captain's full name.</span>
+        </label>
+
+        <label class="field">
+          <span class="lab">Phone number <span class="req">*</span></span>
+          <input type="tel" id="captainPhone" name="captainPhone" inputmode="numeric"
+                 placeholder="024xxxxxxx" maxlength="10" autocomplete="tel" />
+          <span class="err-msg" data-for="captainPhone">Enter a 10-digit Ghana number starting with 0 (e.g. 024xxxxxxx).</span>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="waSame" />
+          <span>WhatsApp number is the same as my phone number</span>
+        </label>
+
+        <label class="field">
+          <span class="lab">WhatsApp number <span class="opt">(optional)</span></span>
+          <input type="tel" id="whatsapp" name="whatsapp" inputmode="numeric"
+                 placeholder="024xxxxxxx" maxlength="10" />
+          <span class="err-msg" data-for="whatsapp">Enter a 10-digit Ghana number starting with 0.</span>
+        </label>
+
+        <label class="field" style="margin-bottom:0">
+          <span class="lab">Email <span class="opt">(optional)</span></span>
+          <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" />
+          <span class="err-msg" data-for="email">That email doesn't look right.</span>
+        </label>
+      </div>
+
+      <!-- ===== Section 3 — Players ===== -->
+      <div class="card">
+        <h2 class="section-h"><span class="n">3</span>Players</h2>
+        <p class="section-sub">3x3 rules: 3 players + 1 optional substitute. Players 1–3 are required.</p>
+
+        <label class="check" style="margin-bottom:16px">
+          <input type="checkbox" id="captainIsP1" />
+          <span>Captain is Player&nbsp;1 <span class="small">(auto-fills Player 1 name &amp; phone)</span></span>
+        </label>
+
+        <!-- Player blocks are generated by JS into here -->
+        <div id="playersWrap"></div>
+      </div>
+
+      <!-- ===== Section 4 — Payment confirmation ===== -->
+      <div class="card">
+        <h2 class="section-h"><span class="n">4</span>Payment Confirmation</h2>
+        <p class="section-sub">Enter the details from the Mobile Money payment you just sent.</p>
+
+        <label class="field">
+          <span class="lab">MoMo number you paid FROM <span class="req">*</span></span>
+          <input type="tel" id="payerPhone" name="payerPhone" inputmode="numeric"
+                 placeholder="024xxxxxxx" maxlength="10" />
+          <span class="err-msg" data-for="payerPhone">Enter the 10-digit number the payment was sent from.</span>
+        </label>
+
+        <label class="field">
+          <span class="lab">Name on the sending MoMo account <span class="req">*</span></span>
+          <input type="text" id="payerName" name="payerName" maxlength="60" />
+          <span class="err-msg" data-for="payerName">Please enter the sender's name.</span>
+        </label>
+
+        <label class="field">
+          <span class="lab">Network <span class="req">*</span></span>
+          <select id="payerNetwork" name="payerNetwork">
+            <option value="">Select network…</option>
+            <option value="MTN">MTN</option>
+            <option value="Telecel">Telecel</option>
+            <option value="AirtelTigo">AirtelTigo</option>
+          </select>
+          <span class="err-msg" data-for="payerNetwork">Please select the network.</span>
+        </label>
+
+        <label class="field">
+          <span class="lab">Transaction ID / reference (from the SMS) <span class="req">*</span></span>
+          <input type="text" id="txnId" name="txnId" autocomplete="off" maxlength="40" />
+          <span class="err-msg" data-for="txnId">Enter the transaction ID from your MoMo confirmation SMS.</span>
+        </label>
+
+        <div class="two-col">
+          <label class="field">
+            <span class="lab">Amount sent</span>
+            <input type="text" id="amount" name="amount" value="GH₵200" readonly />
+          </label>
+          <label class="field">
+            <span class="lab">Date of payment <span class="req">*</span></span>
+            <input type="date" id="payDate" name="payDate" />
+            <span class="err-msg" data-for="payDate">Please pick the payment date.</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ===== Section 5 — Agreement ===== -->
+      <div class="card">
+        <h2 class="section-h"><span class="n">5</span>Agreement</h2>
+
+        <label class="check agree">
+          <input type="checkbox" id="agreeRisk" />
+          <span>I confirm all players agree to take part at their own risk and to follow tournament rules and the organizers' decisions.</span>
+        </label>
+        <span class="err-msg" data-for="agreeRisk" style="margin-top:-6px">You must accept this to register.</span>
+
+        <label class="check agree">
+          <input type="checkbox" id="agreeFee" />
+          <span>I understand the registration fee is non-refundable.</span>
+        </label>
+        <span class="err-msg" data-for="agreeFee" style="margin-top:-6px">You must accept this to register.</span>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="reviewBtn">Check Your Details →</button>
+      <p class="center small" style="margin-top:14px">
+        Need help? <a class="help-link" id="helpLink" href="#">Chat with the organizers on WhatsApp</a>
+      </p>
+    </form>
+  </section>
+
+  <!-- ============ REVIEW VIEW ============ -->
+  <section class="view" id="reviewView">
+    <div class="card">
+      <h2 class="section-h"><span class="n">✓</span>Check Your Details</h2>
+      <p class="section-sub">Please confirm everything is correct before you submit.</p>
+      <div id="reviewBody"></div>
+
+      <div class="banner err" id="reviewError"></div>
+
+      <div class="btn-row" style="margin-top:10px">
+        <button type="button" class="btn btn-ghost" id="backBtn">← Edit</button>
+        <button type="button" class="btn btn-primary" id="submitBtn">Submit Registration</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONFIRMATION VIEW ============ -->
+  <section class="view" id="confirmView">
+    <div class="card">
+      <div class="confirm-badge">
+        <div class="check-ic">🏀</div>
+        <div class="center"><span class="status-tag">⏳ Pending payment verification</span></div>
+        <p class="center small" style="margin:10px 0 2px">Your registration code</p>
+        <div class="reg-code" id="regCode">FIRE-M-0000</div>
+      </div>
+
+      <div id="confirmSummary"></div>
+
+      <div class="pay-note" style="border-left-color: var(--green); margin-bottom:16px">
+        We'll verify your Mobile Money payment against our records and update your status.
+        You'll be confirmed once the payment checks out.
+      </div>
+
+      <a href="#" class="btn btn-green" id="shareBtn" style="margin-bottom:10px">📲 Share on WhatsApp</a>
+      <p class="center small">💾 Please <strong>screenshot or download this page</strong> to keep your registration code and details.</p>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="slogan">Play • Compete • Inspire</div>
+    <div class="peace">Shoot Basketballs, Not People 🏀</div>
+  </footer>
+
+</div><!-- /.wrap -->
+
+<script>
+/* =======================================================================
+   CONFIG — edit these values, then host the file. Nothing else required.
+   ======================================================================= */
+const CONFIG = {
+  // Paste the Google Apps Script Web App URL (ends with /exec) here:
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzKs7DZuXFTqtXS28srzNXVQGTnRJrdOmzMEVpAaV8YOnBwnuaNsY3WMmP5aDVmxtONSw/exec",
+
+  // Mobile Money payment details shown in the payment box:
+  MOMO_NUMBER:       "[0550716364]",        // e.g. "024 123 4567"
+  MOMO_NETWORK:      "[MTN / Telecel / AirtelTigo]",
+  MOMO_ACCOUNT_NAME: "[CHRIS KOFI APPIAH]",
+
+  // WhatsApp number for the "need help" + "share" buttons.
+  // Use FULL international format, digits only, no + (Ghana = 233...).
+  // e.g. "233241234567" for 024 123 4567
+  ORGANIZER_WHATSAPP: "233000000000",
+
+  // Deadline shown in the header:
+  DEADLINE_DATE: "[DEADLINE DATE]",
+
+  REGISTRATION_FEE: "GH₵200",
+
+  // Set to true to hide the form and show the "Registration closed" message.
+  REGISTRATION_CLOSED: false
+};
+
+/* ======================= Small helpers ======================= */
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+// Ghana phone: exactly 10 digits, starting with 0.
+const isGhPhone = (v) => /^0\d{9}$/.test(String(v).trim());
+const isEmail   = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v).trim());
+
+// Escape text before putting it into innerHTML.
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+/* ======================= Apply config to the page ======================= */
+function applyConfig() {
+  $("#momoNumber").textContent  = CONFIG.MOMO_NUMBER;
+  $("#payNetwork").textContent  = CONFIG.MOMO_NETWORK;
+  $("#payAccount").textContent  = CONFIG.MOMO_ACCOUNT_NAME;
+  $("#deadlineFact").textContent = CONFIG.DEADLINE_DATE;
+
+  const waHref = "https://wa.me/" + CONFIG.ORGANIZER_WHATSAPP;
+  $("#helpLink").href   = waHref;
+  $("#closedHelp").href = waHref;
+
+  // Closed mode: swap views.
+  if (CONFIG.REGISTRATION_CLOSED) {
+    $("#formView").classList.remove("active");
+    $("#closedView").classList.add("active");
+  }
+}
+
+/* ======================= Build the 4 player blocks ======================= */
+function buildPlayers() {
+  const wrap = $("#playersWrap");
+  const defs = [
+    { n: 1, label: "Player 1", req: true,  sub: "" },
+    { n: 2, label: "Player 2", req: true,  sub: "" },
+    { n: 3, label: "Player 3", req: true,  sub: "" },
+    { n: 4, label: "Player 4", req: false, sub: "(substitute — optional)" }
+  ];
+  wrap.innerHTML = defs.map(p => `
+    <div class="player">
+      <div class="phead">${p.label} ${p.sub ? `<span class="sub">${p.sub}</span>` : (p.req ? `<span class="req" style="color:var(--red)">*</span>` : "")}</div>
+      <label class="field">
+        <span class="lab">Full name ${p.req ? '<span class="req">*</span>' : '<span class="opt">(optional)</span>'}</span>
+        <input type="text" id="p${p.n}Name" maxlength="60" />
+        <span class="err-msg" data-for="p${p.n}Name">Please enter this player's name.</span>
+      </label>
+      <div class="two-col">
+        <label class="field" style="margin-bottom:0">
+          <span class="lab">Phone <span class="opt">(optional)</span></span>
+          <input type="tel" id="p${p.n}Phone" inputmode="numeric" placeholder="024xxxxxxx" maxlength="10" />
+          <span class="err-msg" data-for="p${p.n}Phone">Enter a 10-digit number starting with 0.</span>
+        </label>
+        <label class="field" style="margin-bottom:0">
+          <span class="lab">Jersey # <span class="opt">(optional)</span></span>
+          <input type="number" id="p${p.n}Jersey" inputmode="numeric" min="0" max="99" />
+        </label>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* ======================= Copy MoMo number ======================= */
+function setupCopy() {
+  const btn = $("#copyMomo");
+  btn.addEventListener("click", async () => {
+    const num = CONFIG.MOMO_NUMBER;
+    try {
+      await navigator.clipboard.writeText(num);
+    } catch {
+      // Fallback for older browsers / non-secure contexts
+      const t = document.createElement("textarea");
+      t.value = num; document.body.appendChild(t); t.select();
+      try { document.execCommand("copy"); } catch {}
+      document.body.removeChild(t);
+    }
+    btn.textContent = "Copied ✓";
+    btn.classList.add("copied");
+    setTimeout(() => { btn.textContent = "Copy number"; btn.classList.remove("copied"); }, 1800);
+  });
+}
+
+/* ======================= Captain auto-fill helpers ======================= */
+function setupAutofill() {
+  const capName  = $("#captainName");
+  const capPhone = $("#captainPhone");
+  const waSame   = $("#waSame");
+  const whatsapp = $("#whatsapp");
+  const capIsP1  = $("#captainIsP1");
+
+  // "WhatsApp same as phone"
+  function syncWa() {
+    if (waSame.checked) {
+      whatsapp.value = capPhone.value;
+      whatsapp.readOnly = true;
+      whatsapp.classList.remove("invalid");
+      hideError("whatsapp");
+    } else {
+      whatsapp.readOnly = false;
+    }
+  }
+  waSame.addEventListener("change", syncWa);
+  capPhone.addEventListener("input", () => { if (waSame.checked) whatsapp.value = capPhone.value; syncP1(); });
+
+  // "Captain is Player 1"
+  function syncP1() {
+    const p1Name  = $("#p1Name");
+    const p1Phone = $("#p1Phone");
+    if (!p1Name) return;
+    if (capIsP1.checked) {
+      p1Name.value  = capName.value;
+      p1Phone.value = capPhone.value;
+      p1Name.readOnly = true; p1Phone.readOnly = true;
+      p1Name.classList.remove("invalid"); p1Phone.classList.remove("invalid");
+      hideError("p1Name"); hideError("p1Phone");
+    } else {
+      p1Name.readOnly = false; p1Phone.readOnly = false;
+    }
+  }
+  capIsP1.addEventListener("change", syncP1);
+  capName.addEventListener("input", syncP1);
+
+  // Keep expose for re-sync
+  window.__syncP1 = syncP1;
+  window.__syncWa = syncWa;
+}
+
+/* ======================= Inline validation ======================= */
+function showError(id, msg) {
+  const field = document.getElementById(id);
+  if (field) field.classList.add("invalid");
+  const em = $(`.err-msg[data-for="${id}"]`);
+  if (em) { if (msg) em.textContent = msg; em.classList.add("show"); }
+}
+function hideError(id) {
+  const field = document.getElementById(id);
+  if (field) field.classList.remove("invalid");
+  const em = $(`.err-msg[data-for="${id}"]`);
+  if (em) em.classList.remove("show");
+}
+
+// Validate the whole form. Returns true if valid; otherwise shows errors
+// and scrolls to the first problem.
+function validateForm() {
+  let firstBad = null;
+  const fail = (id) => { if (!firstBad) firstBad = id; };
+
+  // Section 1
+  if (!$("#teamName").value.trim()) { showError("teamName"); fail("teamName"); } else hideError("teamName");
+
+  const division = ($$('input[name="division"]').find(r => r.checked) || {}).value || "";
+  if (!division) { $(`.err-msg[data-for="division"]`).classList.add("show"); fail("divisionRow"); }
+  else $(`.err-msg[data-for="division"]`).classList.remove("show");
+
+  // Section 2
+  if (!$("#captainName").value.trim()) { showError("captainName"); fail("captainName"); } else hideError("captainName");
+
+  if (!isGhPhone($("#captainPhone").value)) { showError("captainPhone"); fail("captainPhone"); } else hideError("captainPhone");
+
+  const waVal = $("#whatsapp").value.trim();
+  if (waVal && !isGhPhone(waVal)) { showError("whatsapp"); fail("whatsapp"); } else hideError("whatsapp");
+
+  const emailVal = $("#email").value.trim();
+  if (emailVal && !isEmail(emailVal)) { showError("email"); fail("email"); } else hideError("email");
+
+  // Section 3 — players 1-3 names required; any phone entered must be valid
+  for (let i = 1; i <= 4; i++) {
+    const nameEl  = $(`#p${i}Name`);
+    const phoneEl = $(`#p${i}Phone`);
+    const required = i <= 3;
+    if (required && !nameEl.value.trim()) { showError(`p${i}Name`); fail(`p${i}Name`); } else hideError(`p${i}Name`);
+    const ph = phoneEl.value.trim();
+    if (ph && !isGhPhone(ph)) { showError(`p${i}Phone`); fail(`p${i}Phone`); } else hideError(`p${i}Phone`);
+  }
+
+  // Section 4
+  if (!isGhPhone($("#payerPhone").value)) { showError("payerPhone"); fail("payerPhone"); } else hideError("payerPhone");
+  if (!$("#payerName").value.trim())      { showError("payerName");  fail("payerName");  } else hideError("payerName");
+  if (!$("#payerNetwork").value)          { showError("payerNetwork"); fail("payerNetwork"); } else hideError("payerNetwork");
+  if (!$("#txnId").value.trim())          { showError("txnId"); fail("txnId"); } else hideError("txnId");
+  if (!$("#payDate").value)               { showError("payDate"); fail("payDate"); } else hideError("payDate");
+
+  // Section 5
+  if (!$("#agreeRisk").checked) { $(`.err-msg[data-for="agreeRisk"]`).classList.add("show"); fail("agreeRisk"); }
+  else $(`.err-msg[data-for="agreeRisk"]`).classList.remove("show");
+  if (!$("#agreeFee").checked)  { $(`.err-msg[data-for="agreeFee"]`).classList.add("show"); fail("agreeFee"); }
+  else $(`.err-msg[data-for="agreeFee"]`).classList.remove("show");
+
+  if (firstBad) {
+    const el = document.getElementById(firstBad) || $(`#${firstBad}`);
+    if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (el && el.focus) try { el.focus({ preventScroll: true }); } catch {}
+    return false;
+  }
+  return true;
+}
+
+/* ======================= Collect all form data ======================= */
+function collectData() {
+  const division = ($$('input[name="division"]').find(r => r.checked) || {}).value || "";
+  const players = [];
+  for (let i = 1; i <= 4; i++) {
+    players.push({
+      name:   $(`#p${i}Name`).value.trim(),
+      phone:  $(`#p${i}Phone`).value.trim(),
+      jersey: $(`#p${i}Jersey`).value.trim()
+    });
+  }
+  return {
+    teamName:    $("#teamName").value.trim(),
+    division:    division,
+    captainName: $("#captainName").value.trim(),
+    captainPhone:$("#captainPhone").value.trim(),
+    whatsapp:    $("#whatsapp").value.trim(),
+    email:       $("#email").value.trim(),
+    players:     players,
+    payerPhone:  $("#payerPhone").value.trim(),
+    payerName:   $("#payerName").value.trim(),
+    network:     $("#payerNetwork").value,
+    txnId:       $("#txnId").value.trim(),   // trimmed, as requested
+    amount:      CONFIG.REGISTRATION_FEE,
+    payDate:     $("#payDate").value
+  };
+}
+
+/* ======================= Build review screen ======================= */
+function buildReview(d) {
+  const row = (k, v) => v ? `<div class="kv"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>` : "";
+  const playerRows = d.players.map((p, i) => {
+    if (!p.name) return "";
+    const extra = [p.phone, p.jersey ? "#" + p.jersey : ""].filter(Boolean).join(" · ");
+    const label = i === 3 ? "Player 4 (sub)" : "Player " + (i + 1);
+    return `<div class="kv"><span class="k">${label}</span><span class="v">${esc(p.name)}${extra ? " — " + esc(extra) : ""}</span></div>`;
+  }).join("");
+
+  $("#reviewBody").innerHTML = `
+    <div class="review-block">
+      <h3>Team</h3>
+      ${row("Team name", d.teamName)}
+      ${row("Division", d.division)}
+    </div>
+    <div class="review-block">
+      <h3>Captain</h3>
+      ${row("Name", d.captainName)}
+      ${row("Phone", d.captainPhone)}
+      ${row("WhatsApp", d.whatsapp)}
+      ${row("Email", d.email)}
+    </div>
+    <div class="review-block">
+      <h3>Players</h3>
+      ${playerRows}
+    </div>
+    <div class="review-block">
+      <h3>Payment</h3>
+      ${row("Paid from", d.payerPhone)}
+      ${row("Sender name", d.payerName)}
+      ${row("Network", d.network)}
+      ${row("Transaction ID", d.txnId)}
+      ${row("Amount", d.amount)}
+      ${row("Payment date", d.payDate)}
+    </div>
+  `;
+}
+
+/* ======================= View switching ======================= */
+function showView(id) {
+  $$(".view").forEach(v => v.classList.remove("active"));
+  $("#" + id).classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ======================= Banners ======================= */
+function banner(el, msg) {
+  if (msg) { el.innerHTML = msg; el.classList.add("show"); }
+  else { el.classList.remove("show"); el.innerHTML = ""; }
+}
+
+/* ======================= Submit to Apps Script ======================= */
+let pendingData = null;
+
+async function submitRegistration() {
+  const submitBtn = $("#submitBtn");
+  const reviewErr = $("#reviewError");
+  banner(reviewErr, "");
+
+  // Disable button + show spinner to block double submits
+  submitBtn.disabled = true;
+  const originalText = submitBtn.textContent;
+  submitBtn.innerHTML = '<span class="spinner"></span> Sending…';
+
+  try {
+    // NOTE: text/plain content type keeps this a "simple" CORS request,
+    // so the browser does not send a preflight the Apps Script can't answer.
+    const res = await fetch(CONFIG.SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(pendingData)
+    });
+
+    let json;
+    try { json = await res.json(); }
+    catch { throw new Error("Unexpected response from the server."); }
+
+    if (json.success) {
+      showConfirmation(json.code, pendingData);
+      return;
+    }
+
+    // Duplicate transaction ID → specific message, stay on review
+    if (json.duplicate) {
+      banner(reviewErr, "⚠️ This transaction ID has already been used. " +
+        `<a class="help-link" href="https://wa.me/${CONFIG.ORGANIZER_WHATSAPP}">Contact the organizers on WhatsApp</a>.`);
+    } else if (json.closed) {
+      banner(reviewErr, "Registration is now closed. Please contact the organizers.");
+    } else {
+      banner(reviewErr, "⚠️ " + esc(json.error || "Something went wrong. Please try again."));
+    }
+  } catch (err) {
+    banner(reviewErr, "⚠️ Could not reach the server. Check your internet connection and try again. " +
+      `If it keeps failing, <a class="help-link" href="https://wa.me/${CONFIG.ORGANIZER_WHATSAPP}">message the organizers</a>.`);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  }
+}
+
+/* ======================= Confirmation screen ======================= */
+function showConfirmation(code, d) {
+  $("#regCode").textContent = code;
+
+  const row = (k, v) => v ? `<div class="kv"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>` : "";
+  const playerRows = d.players.map((p, i) => {
+    if (!p.name) return "";
+    const label = i === 3 ? "Player 4 (sub)" : "Player " + (i + 1);
+    return `<div class="kv"><span class="k">${label}</span><span class="v">${esc(p.name)}</span></div>`;
+  }).join("");
+
+  $("#confirmSummary").innerHTML = `
+    <div class="review-block">
+      <h3>Team</h3>
+      ${row("Team name", d.teamName)}
+      ${row("Division", d.division)}
+      ${row("Captain", d.captainName)}
+    </div>
+    <div class="review-block">
+      <h3>Players</h3>
+      ${playerRows}
+    </div>
+    <div class="review-block">
+      <h3>Payment</h3>
+      ${row("Transaction ID", d.txnId)}
+      ${row("Amount", d.amount)}
+      ${row("Status", "Pending payment verification")}
+    </div>
+  `;
+
+  // Build the WhatsApp share message to the organizer.
+  const lines = [
+    "*FIRE 3x3 Registration*",
+    "Code: " + code,
+    "Team: " + d.teamName + " (" + d.division + ")",
+    "Captain: " + d.captainName + " — " + d.captainPhone,
+    "Players: " + d.players.filter(p => p.name).map(p => p.name).join(", "),
+    "Txn ID: " + d.txnId + " (" + d.network + ")",
+    "Amount: " + d.amount,
+    "Status: Pending verification"
+  ];
+  const shareUrl = "https://wa.me/" + CONFIG.ORGANIZER_WHATSAPP + "?text=" + encodeURIComponent(lines.join("\n"));
+  $("#shareBtn").href = shareUrl;
+
+  showView("confirmView");
+}
+
+/* ======================= Live team counter ======================= */
+async function loadCounter() {
+  // Skip if the script URL hasn't been configured yet.
+  if (!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbzKs7DZuXFTqtXS28srzNXVQGTnRJrdOmzMEVpAaV8YOnBwnuaNsY3WMmP5aDVmxtONSw/exec")) return;
+  try {
+    const res = await fetch(CONFIG.SCRIPT_URL + "?action=count", { method: "GET" });
+    const j = await res.json();
+    if (j && j.success) {
+      $("#cMen").textContent   = j.men ?? 0;
+      $("#cWomen").textContent = j.women ?? 0;
+      $("#cTotal").textContent = j.total ?? 0;
+    }
+  } catch {
+    // Counter is non-critical: leave the dashes if it fails.
+  }
+}
+
+/* ======================= Wire everything up ======================= */
+document.addEventListener("DOMContentLoaded", () => {
+  applyConfig();
+  buildPlayers();
+  setupCopy();
+  setupAutofill();
+  loadCounter();
+
+  // Default the payment date to today for convenience.
+  const today = new Date().toISOString().slice(0, 10);
+  $("#payDate").value = today;
+  $("#payDate").max = today;   // can't pay in the future
+
+  // Clear each field's error as the user fixes it.
+  $$("#regForm input, #regForm select").forEach(el => {
+    el.addEventListener("input", () => hideError(el.id));
+    el.addEventListener("change", () => hideError(el.id));
+  });
+  $$('input[name="division"]').forEach(r =>
+    r.addEventListener("change", () => $(`.err-msg[data-for="division"]`).classList.remove("show")));
+  $("#agreeRisk").addEventListener("change", () => $(`.err-msg[data-for="agreeRisk"]`).classList.remove("show"));
+  $("#agreeFee").addEventListener("change",  () => $(`.err-msg[data-for="agreeFee"]`).classList.remove("show"));
+
+  // Step 1 → Review
+  $("#regForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    banner($("#formError"), "");
+    if (!validateForm()) return;
+    pendingData = collectData();
+    buildReview(pendingData);
+    showView("reviewView");
+  });
+
+  // Review → back to edit
+  $("#backBtn").addEventListener("click", () => showView("formView"));
+
+  // Review → submit
+  $("#submitBtn").addEventListener("click", submitRegistration);
+});
+</script>
+</body>
+</html>
