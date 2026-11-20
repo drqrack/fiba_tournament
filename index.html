@@ -72,20 +72,11 @@ body {
 
 /* ----- Header / event details ----- */
 .logo-slot {
-  width: 96px; height: 96px;
-  margin: 8px auto 14px;
-  border-radius: 50%;
+  width: 130px;
+  margin: 2px auto 10px;
   display: grid; place-items: center;
-  background: var(--panel);
-  border: 2px dashed var(--gold);
-  color: var(--gold);
-  font-family: 'Anton', sans-serif;
-  font-size: 13px;
-  letter-spacing: .5px;
-  text-align: center;
-  overflow: hidden;
 }
-.logo-slot img { width: 100%; height: 100%; object-fit: cover; }
+.logo-slot img, .logo-slot svg { width: 100%; height: auto; display: block; }
 
 h1.title {
   font-family: 'Anton', sans-serif;
@@ -399,8 +390,10 @@ footer .peace { color: var(--gold); }
 
   <!-- ============ HEADER / EVENT DETAILS ============ -->
   <header>
-    <!-- Drop your logo here: replace this div's contents with <img src="logo.png" alt="FIRE logo"> -->
-    <div class="logo-slot" id="logoSlot">LOGO<br>HERE</div>
+    <!-- Logo: animated flaming basketball. Keep fire-ball-icon.svg next to index.html when hosting. -->
+    <div class="logo-slot" id="logoSlot">
+      <img src="fire-ball-icon.svg" alt="FIRE 3x3 flaming basketball logo" width="130" height="150" />
+    </div>
 
     <h1 class="title"><span class="fire">FIRE</span> <span class="three">3x3</span> FIBA</h1>
     <p class="subtitle">

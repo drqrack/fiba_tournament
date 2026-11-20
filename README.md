@@ -54,13 +54,13 @@ const CONFIG = {
 **WhatsApp number format:** drop the leading `0`, add Ghana's code `233`.
 `024 123 4567` → `233241234567`.
 
-**Logo:** replace the placeholder in the header. Find:
+**Logo:** the header uses the animated flaming-basketball logo `fire-ball-icon.svg`.
+**Keep that file next to `index.html` when you host** (upload both), or the logo won't show.
+To use a different logo instead, replace the `src` in the header:
 ```html
-<div class="logo-slot" id="logoSlot">LOGO<br>HERE</div>
-```
-and swap it for your image (put `logo.png` next to `index.html`):
-```html
-<div class="logo-slot"><img src="logo.png" alt="FIRE logo"></div>
+<div class="logo-slot" id="logoSlot">
+  <img src="fire-ball-icon.svg" alt="FIRE 3x3 flaming basketball logo" width="130" height="150" />
+</div>
 ```
 
 ---
@@ -68,7 +68,7 @@ and swap it for your image (put `logo.png` next to `index.html`):
 ## 3. Host it (free)
 
 ### Option A — GitHub Pages
-1. Create a GitHub repo and upload `index.html` (and `logo.png` if you have one).
+1. Create a GitHub repo and upload **`index.html` and `fire-ball-icon.svg`** (both files).
 2. Repo **Settings → Pages → Build and deployment → Source: Deploy from a branch**, branch `main`, folder `/root`, **Save**.
 3. Your site goes live at `https://<username>.github.io/<repo>/` in a minute or two.
 
