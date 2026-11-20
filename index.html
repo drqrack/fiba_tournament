@@ -392,7 +392,7 @@ footer .peace { color: var(--gold); }
   <header>
     <!-- Logo: animated flaming basketball. Keep fire-ball-icon.svg next to index.html when hosting. -->
     <div class="logo-slot" id="logoSlot">
-      <img src="fire-ball-icon.svg" alt="FIRE 3x3 flaming basketball logo" width="130" height="150" />
+      <img src="fire_logo.jpeg" alt="" width="130" height="150" />
     </div>
 
     <h1 class="title"><span class="fire">FIRE</span> <span class="three">3x3</span> FIBA</h1>
@@ -746,14 +746,14 @@ const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzKs7DZuXFTqtXS28srzNXVQGTnRJrdOmzMEVpAaV8YOnBwnuaNsY3WMmP5aDVmxtONSw/exec",
 
   // Mobile Money payment details shown in the payment box:
-  MOMO_NUMBER:       "[0550716364]",        // e.g. "024 123 4567"
+  MOMO_NUMBER:       "[0242228887]",        // e.g. "024 123 4567"
   MOMO_NETWORK:      "[MTN / Telecel / AirtelTigo]",
-  MOMO_ACCOUNT_NAME: "[CHRIS KOFI APPIAH]",
+  MOMO_ACCOUNT_NAME: "[Anthony Yaw Zugah]",
 
   // WhatsApp number for the "need help" + "share" buttons.
   // Use FULL international format, digits only, no + (Ghana = 233...).
   // e.g. "233241234567" for 024 123 4567
-  ORGANIZER_WHATSAPP: "233550716364",
+  ORGANIZER_WHATSAPP: "233242228887",
 
   // Deadline shown in the header:
   DEADLINE_DATE: "[DEADLINE DATE]",
@@ -804,7 +804,7 @@ function buildPlayers() {
     { n: 1, label: "Player 1", req: true,  sub: "" },
     { n: 2, label: "Player 2", req: true,  sub: "" },
     { n: 3, label: "Player 3", req: true,  sub: "" },
-    { n: 4, label: "Player 4", req: false, sub: "(substitute — optional)" }
+    { n: 4, label: "Player 4", req: true, sub: "" }
   ];
   wrap.innerHTML = defs.map(p => `
     <div class="player">
