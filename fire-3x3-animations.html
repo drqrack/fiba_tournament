@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FIRE 3x3 – Animation Kit</title>
+<style>
+  /* =========================================================
+     DEMO PAGE STYLES (you don't need these – your site has its own)
+     ========================================================= */
+  body{margin:0;background:#0d0d0d;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.5}
+  .demo{max-width:760px;margin:0 auto;padding:32px 20px 80px}
+  .demo h1{font-size:28px;margin:0 0 4px}
+  .demo h2{font-size:18px;margin:48px 0 6px;color:#FCD116}
+  .demo p.note{color:#aaa;font-size:14px;margin:0 0 16px}
+  .card{background:#161616;border:1px solid #262626;border-radius:16px;padding:24px;display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap}
+  .demo-btn{background:#CE1126;color:#fff;border:0;border-radius:10px;padding:14px 22px;font-size:16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:10px}
+  .demo-btn.gold{background:#FCD116;color:#111}
+
+  /* =========================================================
+     1) SPINNING + FLOATING BASKETBALL
+     ========================================================= */
+  .spin-ball{position:relative;display:inline-block;width:var(--size,96px);height:calc(var(--size,96px) * 1.35)}
+  .spin-ball__ball{position:absolute;top:0;left:0;width:var(--size,96px);height:var(--size,96px);animation:sb-float 2.4s ease-in-out infinite}
+  .spin-ball__ball svg{width:100%;height:100%;animation:sb-spin 1.6s linear infinite;display:block}
+  .spin-ball__shadow{position:absolute;bottom:0;left:15%;width:70%;height:10%;border-radius:50%;background:rgba(0,0,0,.55);filter:blur(3px);animation:sb-shadow 2.4s ease-in-out infinite}
+  @keyframes sb-spin{to{transform:rotate(360deg)}}
+  @keyframes sb-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14%)}}
+  @keyframes sb-shadow{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(.7);opacity:.3}}
+
+  /* =========================================================
+     2) SHOT SCENE (player shoots, ball swishes through the net)
+     ========================================================= */
+  .shot-scene{width:100%;max-width:520px;height:auto;display:block}
+  .shot-scene .ss-swish{font:900 26px/1 system-ui,sans-serif;fill:#FCD116;letter-spacing:1px;opacity:0}
+
+  /* =========================================================
+     3) BOUNCING-BALL LOADER (for the Submit button)
+     ========================================================= */
+  .ball-loader{display:inline-block;width:20px;height:28px;position:relative}
+  .ball-loader svg{position:absolute;left:0;top:0;width:20px;height:20px;animation:bl-bounce .55s cubic-bezier(.5,0,.5,1) infinite alternate;transform-origin:50% 100%}
+  .ball-loader::after{content:"";position:absolute;bottom:0;left:3px;width:14px;height:3px;border-radius:50%;background:rgba(0,0,0,.35);animation:bl-shadow .55s cubic-bezier(.5,0,.5,1) infinite alternate}
+  @keyframes bl-bounce{0%{transform:translateY(0) scale(1,1)}85%{transform:translateY(7px) scale(1,1)}100%{transform:translateY(8px) scale(1.15,.85)}}
+  @keyframes bl-shadow{0%{transform:scaleX(.6);opacity:.4}100%{transform:scaleX(1.1);opacity:.8}}
+
+  /* =========================================================
+     4) SCROLL REVEAL (sections slide up as you scroll)
+     ========================================================= */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.is-visible{opacity:1;transform:none}
+
+  /* Respect users who turn off motion on their phone */
+  @media (prefers-reduced-motion: reduce){
+    .spin-ball__ball,.spin-ball__ball svg,.spin-ball__shadow,.ball-loader svg,.ball-loader::after{animation:none}
+    .reveal{opacity:1;transform:none;transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="demo">
+  <h1>FIRE 3x3 – Animation Kit</h1>
+  <p class="note">Each block below is self-contained. Copy the CSS (in &lt;style&gt;), the HTML, and the matching JS into your page.</p>
+
+  <!-- ===================================================== -->
+  <h2>1. Spinning basketball</h2>
+  <p class="note">Good beside the event title in the header. Change the size with <code>style="--size:64px"</code>.</p>
+  <div class="card reveal">
+    <!-- COPY FROM HERE -->
+    <div class="spin-ball" style="--size:96px" aria-hidden="true">
+      <div class="spin-ball__ball">
+        <svg viewBox="0 0 100 100">
+          <defs>
+            <radialGradient id="bbShade" cx="35%" cy="30%" r="75%">
+              <stop offset="0%" stop-color="#FFA35C"/>
+              <stop offset="60%" stop-color="#E8742A"/>
+              <stop offset="100%" stop-color="#A84A12"/>
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="50" r="47" fill="url(#bbShade)" stroke="#1b1b1b" stroke-width="3"/>
+          <g fill="none" stroke="#1b1b1b" stroke-width="3" stroke-linecap="round">
+            <line x1="50" y1="3" x2="50" y2="97"/>
+            <line x1="3" y1="50" x2="97" y2="50"/>
+            <path d="M18 16 Q38 50 18 84"/>
+            <path d="M82 16 Q62 50 82 84"/>
+          </g>
+        </svg>
+      </div>
+      <div class="spin-ball__shadow"></div>
+    </div>
+    <!-- TO HERE -->
+    <div class="spin-ball" style="--size:56px" aria-hidden="true">
+      <div class="spin-ball__ball"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="url(#bbShade)" stroke="#1b1b1b" stroke-width="3"/><g fill="none" stroke="#1b1b1b" stroke-width="3" stroke-linecap="round"><line x1="50" y1="3" x2="50" y2="97"/><line x1="3" y1="50" x2="97" y2="50"/><path d="M18 16 Q38 50 18 84"/><path d="M82 16 Q62 50 82 84"/></g></svg></div>
+      <div class="spin-ball__shadow"></div>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>2. Player shooting – swish!</h2>
+  <p class="note">Loops forever. Works well in the hero section above the payment box.</p>
+  <div class="card reveal">
+    <!-- COPY FROM HERE -->
+    <svg class="shot-scene" data-shot-scene viewBox="0 0 400 290" role="img" aria-label="Player shooting a basketball into the hoop">
+      <defs>
+        <radialGradient id="ssBall" cx="35%" cy="30%" r="75%">
+          <stop offset="0%" stop-color="#FFA35C"/><stop offset="60%" stop-color="#E8742A"/><stop offset="100%" stop-color="#A84A12"/>
+        </radialGradient>
+        <linearGradient id="ssCourt" x1="0" x2="1">
+          <stop offset="0" stop-color="#CE1126"/><stop offset=".5" stop-color="#FCD116"/><stop offset="1" stop-color="#006B3F"/>
+        </linearGradient>
+      </defs>
+
+      <!-- court floor -->
+      <rect x="0" y="268" width="400" height="22" fill="#1d1d1d"/>
+      <rect x="0" y="268" width="400" height="4" fill="url(#ssCourt)"/>
+
+      <!-- hoop: pole, arm, backboard -->
+      <rect x="352" y="88" width="8" height="180" fill="#3a3a3a"/>
+      <rect x="334" y="96" width="24" height="6" fill="#3a3a3a"/>
+      <rect x="326" y="62" width="10" height="78" rx="2" fill="#f2f2f2" stroke="#999" stroke-width="1"/>
+      <rect x="327" y="98" width="8" height="22" fill="none" stroke="#CE1126" stroke-width="2"/>
+
+      <!-- net (stretches when the ball goes through) -->
+      <g class="ss-net" style="transform-origin:310px 120px">
+        <path d="M290 120 L297 158 L323 158 L330 120" fill="none" stroke="#eee" stroke-width="1.6"/>
+        <path d="M290 120 L310 158 L330 120 M297 120 L303 158 M310 120 L310 158 M323 120 L317 158
+                 M292 131 L328 131 M294 144 L326 144" fill="none" stroke="#eee" stroke-width="1.1" opacity=".85"/>
+      </g>
+
+      <!-- player -->
+      <ellipse class="ss-shadow" cx="80" cy="268" rx="26" ry="4" fill="rgba(0,0,0,.6)"/>
+      <g class="ss-player" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+        <line class="ss-arm2" x1="80" y1="164" x2="64" y2="190" stroke-width="7" stroke="#5a3a22"/>
+        <!-- jersey (Ghana red) -->
+        <path d="M70 160 L90 160 L92 206 L68 206 Z" fill="#CE1126" stroke="#CE1126" stroke-width="3"/>
+        <text x="80" y="190" fill="#FCD116" stroke="none" font-size="14" font-weight="900" text-anchor="middle" font-family="system-ui,sans-serif">3</text>
+        <!-- shorts + legs -->
+        <path d="M68 204 L92 204 L94 222 L66 222 Z" fill="#111" stroke="#111" stroke-width="3"/>
+        <line x1="74" y1="220" x2="68" y2="262" stroke-width="7" stroke="#5a3a22"/>
+        <line x1="86" y1="220" x2="94" y2="262" stroke-width="7" stroke="#5a3a22"/>
+        <!-- head -->
+        <circle cx="80" cy="146" r="11" fill="#5a3a22" stroke="#5a3a22"/>
+        <!-- shooting arm -->
+        <line class="ss-arm" x1="80" y1="164" x2="110" y2="172" stroke-width="7" stroke="#5a3a22"/>
+      </g>
+
+      <!-- ball -->
+      <g class="ss-ball">
+        <g class="ss-spin">
+          <circle r="10" fill="url(#ssBall)" stroke="#1b1b1b" stroke-width="1.4"/>
+          <g fill="none" stroke="#1b1b1b" stroke-width="1.3">
+            <line x1="0" y1="-10" x2="0" y2="10"/><line x1="-10" y1="0" x2="10" y2="0"/>
+            <path d="M-6.5 -7.5 Q-2 0 -6.5 7.5"/><path d="M6.5 -7.5 Q2 0 6.5 7.5"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- rim drawn last so the ball passes behind its front edge -->
+      <line x1="288" y1="120" x2="332" y2="120" stroke="#E8742A" stroke-width="4" stroke-linecap="round"/>
+
+      <text class="ss-swish" x="230" y="70" text-anchor="middle">SWISH!</text>
+    </svg>
+    <!-- TO HERE -->
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>3. Bouncing-ball loader on the Submit button</h2>
+  <p class="note">Tap the button to see it. In your form code, call <code>setButtonLoading(btn, true)</code> before sending and <code>false</code> after.</p>
+  <div class="card reveal">
+    <button class="demo-btn" id="demoSubmit" type="button">Submit Registration</button>
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>4. Ghana-colours confetti on the success screen</h2>
+  <p class="note">Call <code>fireConfetti()</code> when the registration is saved.</p>
+  <div class="card reveal">
+    <button class="demo-btn gold" type="button" onclick="fireConfetti()">🎉 Test confetti</button>
+  </div>
+
+  <h2>5. Scroll reveal</h2>
+  <p class="note">Add <code>class="reveal"</code> to any section and it fades up as it scrolls into view. Every card on this page uses it.</p>
+</div>
+
+<script>
+/* =========================================================
+   2) SHOT SCENE – animates every <svg data-shot-scene>
+   ========================================================= */
+function initShotScene(svg){
+  const $ = s => svg.querySelector(s);
+  const ball=$('.ss-ball'), spin=$('.ss-spin'), player=$('.ss-player'),
+        arm=$('.ss-arm'), arm2=$('.ss-arm2'), net=$('.ss-net'),
+        swish=$('.ss-swish'), shadow=$('.ss-shadow');
+
+  const LOOP=2900, SH={x:80,y:164}, ARM=32, RIM={x:310,y:112};
+  const rad=d=>d*Math.PI/180, clamp=v=>Math.max(0,Math.min(1,v)), lerp=(a,b,u)=>a+(b-a)*u;
+  const ease=u=>u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+
+  function jumpAt(t){ return t<800 ? -24*Math.sin(Math.PI*t/800) : 0; }
+  function armAngle(t){
+    if(t<420)  return lerp(20,-72,ease(t/420));          // load & shoot
+    if(t<950)  return -72;                                // follow-through
+    if(t<1450) return lerp(-72,20,ease((t-950)/500));     // arm comes down
+    return 20;
+  }
+  function hand(t,deg){
+    const j=jumpAt(t);
+    return {x:SH.x+ARM*Math.cos(rad(deg)), y:SH.y+ARM*Math.sin(rad(deg))+j};
+  }
+  const REL = (()=>{ const h=hand(420,-72); return {x:h.x+3,y:h.y-10}; })();
+
+  function ballAt(t){
+    if(t<420){ const h=hand(t,armAngle(t)); return {x:h.x+3,y:h.y-10,o:1,r:0}; }
+    if(t<1500){                                          // flight
+      const u=(t-420)/1080;
+      const x=lerp(REL.x,RIM.x,u);
+      const y=lerp(REL.y,RIM.y,u)-95*4*u*(1-u);
+      return {x,y,o:1,r:-u*540};
+    }
+    if(t<1740){ const u=(t-1500)/240; return {x:RIM.x,y:lerp(RIM.y,166,u*u),o:1,r:-540}; }      // through net
+    if(t<2040){ const u=(t-1740)/300; return {x:lerp(310,318,u),y:lerp(166,258,u*u),o:1,r:-560}; } // drop
+    if(t<2320){ const u=(t-2040)/280; return {x:lerp(318,330,u),y:258-26*Math.sin(Math.PI*u),o:1,r:-580}; } // bounce
+    const u=clamp((t-2320)/420);
+    return {x:330,y:258,o:1-u,r:-580};                   // fade, then loop
+  }
+
+  function draw(t){
+    const j=jumpAt(t), a=armAngle(t), h=hand(t,a);
+    player.setAttribute('transform',`translate(0 ${j})`);
+    // arm lines live inside the jumping group, so remove the jump offset
+    arm.setAttribute('x2',h.x); arm.setAttribute('y2',h.y-j);
+    const a2 = t<420 ? a+28 : lerp(-44,40,clamp((t-420)/900));
+    arm2.setAttribute('x2',SH.x+26*Math.cos(rad(a2))); arm2.setAttribute('y2',SH.y+26*Math.sin(rad(a2)));
+    const s=1+j/60; shadow.setAttribute('rx',26*s); shadow.setAttribute('opacity',.4+.6*s);
+
+    const b=ballAt(t);
+    ball.setAttribute('transform',`translate(${b.x} ${b.y})`);
+    ball.setAttribute('opacity',b.o);
+    spin.setAttribute('transform',`rotate(${b.r})`);
+
+    const n = t>1500&&t<1860 ? Math.sin(Math.PI*(t-1500)/360) : 0;
+    net.style.transform=`scale(${1-0.12*n},${1+0.32*n})`;
+
+    let sw=0; if(t>1540&&t<2200){ const u=(t-1540)/660; sw=u<.2?u/.2:u>.7?(1-u)/.3:1; }
+    swish.setAttribute('opacity',sw);
+    swish.setAttribute('transform',`translate(230 70) scale(${.8+.2*Math.min(1,sw*1.5)}) translate(-230 -70)`);
+  }
+
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ draw(1600); return; }
+
+  let start=null, visible=true;
+  new IntersectionObserver(([e])=>{visible=e.isIntersecting}).observe(svg); // pause off-screen
+  (function frame(now){
+    if(start===null) start=now;
+    if(visible) draw((now-start)%LOOP);
+    requestAnimationFrame(frame);
+  })(performance.now());
+}
+document.querySelectorAll('[data-shot-scene]').forEach(initShotScene);
+
+/* =========================================================
+   3) SUBMIT BUTTON LOADER
+   ========================================================= */
+const BALL_SVG='<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#E8742A" stroke="#1b1b1b" stroke-width="6"/><g fill="none" stroke="#1b1b1b" stroke-width="6"><line x1="50" y1="4" x2="50" y2="96"/><line x1="4" y1="50" x2="96" y2="50"/><path d="M18 16 Q38 50 18 84"/><path d="M82 16 Q62 50 82 84"/></g></svg>';
+function setButtonLoading(btn, loading, text='Submitting…'){
+  if(loading){
+    btn.dataset.label=btn.innerHTML;
+    btn.disabled=true;
+    btn.innerHTML=`<span class="ball-loader">${BALL_SVG}</span>${text}`;
+  }else{
+    btn.disabled=false;
+    btn.innerHTML=btn.dataset.label||btn.innerHTML;
+  }
+}
+// demo only
+document.getElementById('demoSubmit').addEventListener('click',e=>{
+  const b=e.currentTarget; setButtonLoading(b,true); setTimeout(()=>setButtonLoading(b,false),2500);
+});
+
+/* =========================================================
+   4) CONFETTI (Ghana colours + mini basketballs)
+   ========================================================= */
+function fireConfetti(duration=3200){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=document.createElement('canvas'), ctx=c.getContext('2d'), dpr=window.devicePixelRatio||1;
+  Object.assign(c.style,{position:'fixed',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:9999});
+  document.body.appendChild(c);
+  const resize=()=>{c.width=innerWidth*dpr;c.height=innerHeight*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}; resize();
+  const colors=['#CE1126','#FCD116','#006B3F','#ffffff','#111111'];
+  const parts=Array.from({length:160},(_,i)=>({
+    x:innerWidth/2+(Math.random()-.5)*80, y:innerHeight*.35,
+    vx:(Math.random()-.5)*14, vy:-Math.random()*14-4,
+    w:6+Math.random()*6, h:8+Math.random()*8, r:Math.random()*6, vr:(Math.random()-.5)*.3,
+    color:colors[i%colors.length], ball:i%14===0
+  }));
+  const t0=performance.now();
+  (function tick(now){
+    const el=now-t0; ctx.clearRect(0,0,innerWidth,innerHeight);
+    ctx.globalAlpha=el>duration-600?Math.max(0,(duration-el)/600):1;
+    for(const p of parts){
+      p.vy+=.35; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+      if(p.ball){
+        ctx.fillStyle='#E8742A'; ctx.beginPath(); ctx.arc(0,0,8,0,Math.PI*2); ctx.fill();
+        ctx.strokeStyle='#1b1b1b'; ctx.lineWidth=1.3; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-8,0); ctx.lineTo(8,0); ctx.moveTo(0,-8); ctx.lineTo(0,8); ctx.stroke();
+      }else{ ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); }
+      ctx.restore();
+    }
+    if(el<duration) requestAnimationFrame(tick); else c.remove();
+  })(t0);
+}
+
+/* =========================================================
+   5) SCROLL REVEAL
+   ========================================================= */
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('is-visible'));return;}
+  const io=new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target);}
+  }),{threshold:.15});
+  els.forEach(e=>io.observe(e));
+})();
+</script>
+</body>
+</html>

@@ -349,6 +349,46 @@ footer .peace { color: var(--gold); }
 .help-link:hover { text-decoration: underline; }
 
 .small { font-size: 12.5px; color: var(--muted); }
+
+/* =======================================================================
+   ANIMATIONS (from the FIRE 3x3 animation kit)
+   ======================================================================= */
+
+/* 1) Spinning + floating basketball (used on the confirmation screen) */
+.spin-ball { position: relative; display: inline-block; width: var(--size,96px); height: calc(var(--size,96px) * 1.35); }
+.spin-ball__ball { position: absolute; top: 0; left: 0; width: var(--size,96px); height: var(--size,96px); animation: sb-float 2.4s ease-in-out infinite; }
+.spin-ball__ball svg { width: 100%; height: 100%; animation: sb-spin 1.6s linear infinite; display: block; }
+.spin-ball__shadow { position: absolute; bottom: 0; left: 15%; width: 70%; height: 10%; border-radius: 50%; background: rgba(0,0,0,.55); filter: blur(3px); animation: sb-shadow 2.4s ease-in-out infinite; }
+@keyframes sb-spin   { to { transform: rotate(360deg); } }
+@keyframes sb-float  { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14%); } }
+@keyframes sb-shadow { 0%,100% { transform: scale(1); opacity: .6; } 50% { transform: scale(.7); opacity: .3; } }
+
+/* 2) Hero shot scene (player shoots, ball swishes through the net) */
+.hero-scene {
+  display: flex; justify-content: center;
+  padding: 8px 6px 2px;
+  margin-bottom: 18px;
+}
+.shot-scene { width: 100%; max-width: 440px; height: auto; display: block; }
+.shot-scene .ss-swish { font: 400 26px/1 'Anton', system-ui, sans-serif; fill: var(--gold); letter-spacing: 1px; opacity: 0; }
+
+/* 3) Bouncing-ball loader (shown inside the Submit button while sending) */
+.ball-loader { display: inline-block; width: 20px; height: 24px; position: relative; }
+.ball-loader svg { position: absolute; left: 0; top: 0; width: 20px; height: 20px; animation: bl-bounce .55s cubic-bezier(.5,0,.5,1) infinite alternate; transform-origin: 50% 100%; }
+.ball-loader::after { content: ""; position: absolute; bottom: 0; left: 3px; width: 14px; height: 3px; border-radius: 50%; background: rgba(0,0,0,.35); animation: bl-shadow .55s cubic-bezier(.5,0,.5,1) infinite alternate; }
+@keyframes bl-bounce { 0% { transform: translateY(0) scale(1,1); } 85% { transform: translateY(5px) scale(1,1); } 100% { transform: translateY(6px) scale(1.15,.85); } }
+@keyframes bl-shadow { 0% { transform: scaleX(.6); opacity: .4; } 100% { transform: scaleX(1.1); opacity: .8; } }
+
+/* 4) Scroll reveal (sections fade + slide up as they scroll into view) */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+
+/* Respect users who ask for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .spin-ball__ball, .spin-ball__ball svg, .spin-ball__shadow,
+  .ball-loader svg, .ball-loader::after { animation: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
 </style>
 </head>
 
@@ -398,6 +438,71 @@ footer .peace { color: var(--gold); }
 
   <!-- ============ FORM VIEW (payment + registration) ============ -->
   <section class="view active" id="formView">
+
+    <!-- Animated hero: player shoots, ball swishes through the net (loops) -->
+    <div class="hero-scene" aria-hidden="false">
+      <svg class="shot-scene" data-shot-scene viewBox="0 0 400 290" role="img"
+           aria-label="Player shooting a basketball into the hoop">
+        <defs>
+          <radialGradient id="ssBall" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#FFA35C"/><stop offset="60%" stop-color="#E8742A"/><stop offset="100%" stop-color="#A84A12"/>
+          </radialGradient>
+          <linearGradient id="ssCourt" x1="0" x2="1">
+            <stop offset="0" stop-color="#CE1126"/><stop offset=".5" stop-color="#FCD116"/><stop offset="1" stop-color="#006B3F"/>
+          </linearGradient>
+        </defs>
+
+        <!-- court floor -->
+        <rect x="0" y="268" width="400" height="22" fill="#1d1d1d"/>
+        <rect x="0" y="268" width="400" height="4" fill="url(#ssCourt)"/>
+
+        <!-- hoop: pole, arm, backboard -->
+        <rect x="352" y="88" width="8" height="180" fill="#3a3a3a"/>
+        <rect x="334" y="96" width="24" height="6" fill="#3a3a3a"/>
+        <rect x="326" y="62" width="10" height="78" rx="2" fill="#f2f2f2" stroke="#999" stroke-width="1"/>
+        <rect x="327" y="98" width="8" height="22" fill="none" stroke="#CE1126" stroke-width="2"/>
+
+        <!-- net (stretches when the ball goes through) -->
+        <g class="ss-net" style="transform-origin:310px 120px">
+          <path d="M290 120 L297 158 L323 158 L330 120" fill="none" stroke="#eee" stroke-width="1.6"/>
+          <path d="M290 120 L310 158 L330 120 M297 120 L303 158 M310 120 L310 158 M323 120 L317 158
+                   M292 131 L328 131 M294 144 L326 144" fill="none" stroke="#eee" stroke-width="1.1" opacity=".85"/>
+        </g>
+
+        <!-- player -->
+        <ellipse class="ss-shadow" cx="80" cy="268" rx="26" ry="4" fill="rgba(0,0,0,.6)"/>
+        <g class="ss-player" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+          <line class="ss-arm2" x1="80" y1="164" x2="64" y2="190" stroke-width="7" stroke="#5a3a22"/>
+          <!-- jersey (Ghana red) -->
+          <path d="M70 160 L90 160 L92 206 L68 206 Z" fill="#CE1126" stroke="#CE1126" stroke-width="3"/>
+          <text x="80" y="190" fill="#FCD116" stroke="none" font-size="14" font-weight="900" text-anchor="middle" font-family="system-ui,sans-serif">3</text>
+          <!-- shorts + legs -->
+          <path d="M68 204 L92 204 L94 222 L66 222 Z" fill="#111" stroke="#111" stroke-width="3"/>
+          <line x1="74" y1="220" x2="68" y2="262" stroke-width="7" stroke="#5a3a22"/>
+          <line x1="86" y1="220" x2="94" y2="262" stroke-width="7" stroke="#5a3a22"/>
+          <!-- head -->
+          <circle cx="80" cy="146" r="11" fill="#5a3a22" stroke="#5a3a22"/>
+          <!-- shooting arm -->
+          <line class="ss-arm" x1="80" y1="164" x2="110" y2="172" stroke-width="7" stroke="#5a3a22"/>
+        </g>
+
+        <!-- ball -->
+        <g class="ss-ball">
+          <g class="ss-spin">
+            <circle r="10" fill="url(#ssBall)" stroke="#1b1b1b" stroke-width="1.4"/>
+            <g fill="none" stroke="#1b1b1b" stroke-width="1.3">
+              <line x1="0" y1="-10" x2="0" y2="10"/><line x1="-10" y1="0" x2="10" y2="0"/>
+              <path d="M-6.5 -7.5 Q-2 0 -6.5 7.5"/><path d="M6.5 -7.5 Q2 0 6.5 7.5"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- rim drawn last so the ball passes behind its front edge -->
+        <line x1="288" y1="120" x2="332" y2="120" stroke="#E8742A" stroke-width="4" stroke-linecap="round"/>
+
+        <text class="ss-swish" x="230" y="70" text-anchor="middle">SWISH!</text>
+      </svg>
+    </div>
 
     <!-- Payment instructions (highlighted, BEFORE the form) -->
     <div class="card pay">
@@ -592,7 +697,28 @@ footer .peace { color: var(--gold); }
   <section class="view" id="confirmView">
     <div class="card">
       <div class="confirm-badge">
-        <div class="check-ic">🏀</div>
+        <!-- Spinning + floating basketball -->
+        <div class="spin-ball" style="--size:72px; display:block; margin:0 auto 14px;" aria-hidden="true">
+          <div class="spin-ball__ball">
+            <svg viewBox="0 0 100 100">
+              <defs>
+                <radialGradient id="bbShade" cx="35%" cy="30%" r="75%">
+                  <stop offset="0%" stop-color="#FFA35C"/>
+                  <stop offset="60%" stop-color="#E8742A"/>
+                  <stop offset="100%" stop-color="#A84A12"/>
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="47" fill="url(#bbShade)" stroke="#1b1b1b" stroke-width="3"/>
+              <g fill="none" stroke="#1b1b1b" stroke-width="3" stroke-linecap="round">
+                <line x1="50" y1="3" x2="50" y2="97"/>
+                <line x1="3" y1="50" x2="97" y2="50"/>
+                <path d="M18 16 Q38 50 18 84"/>
+                <path d="M82 16 Q62 50 82 84"/>
+              </g>
+            </svg>
+          </div>
+          <div class="spin-ball__shadow"></div>
+        </div>
         <div class="center"><span class="status-tag">⏳ Pending payment verification</span></div>
         <p class="center small" style="margin:10px 0 2px">Your registration code</p>
         <div class="reg-code" id="regCode">FIRE-M-0000</div>
@@ -933,10 +1059,8 @@ async function submitRegistration() {
   const reviewErr = $("#reviewError");
   banner(reviewErr, "");
 
-  // Disable button + show spinner to block double submits
-  submitBtn.disabled = true;
-  const originalText = submitBtn.textContent;
-  submitBtn.innerHTML = '<span class="spinner"></span> Sending…';
+  // Disable button + show bouncing-ball loader to block double submits
+  setButtonLoading(submitBtn, true, "Sending…");
 
   try {
     // NOTE: text/plain content type keeps this a "simple" CORS request,
@@ -969,8 +1093,7 @@ async function submitRegistration() {
     banner(reviewErr, "⚠️ Could not reach the server. Check your internet connection and try again. " +
       `If it keeps failing, <a class="help-link" href="https://wa.me/${CONFIG.ORGANIZER_WHATSAPP}">message the organizers</a>.`);
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalText;
+    setButtonLoading(submitBtn, false);
   }
 }
 
@@ -1019,12 +1142,13 @@ function showConfirmation(code, d) {
   $("#shareBtn").href = shareUrl;
 
   showView("confirmView");
+  fireConfetti();   // 🎉 celebrate a successful registration
 }
 
 /* ======================= Live team counter ======================= */
 async function loadCounter() {
   // Skip if the script URL hasn't been configured yet.
-  if (!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbzKs7DZuXFTqtXS28srzNXVQGTnRJrdOmzMEVpAaV8YOnBwnuaNsY3WMmP5aDVmxtONSw/exec")) return;
+  if (!CONFIG.SCRIPT_URL || CONFIG.SCRIPT_URL.indexOf("script.google.com") === -1 || CONFIG.SCRIPT_URL.includes("PASTE_YOUR")) return;
   try {
     const res = await fetch(CONFIG.SCRIPT_URL + "?action=count", { method: "GET" });
     const j = await res.json();
@@ -1038,6 +1162,141 @@ async function loadCounter() {
   }
 }
 
+/* =======================================================================
+   ANIMATIONS (from the FIRE 3x3 animation kit)
+   ======================================================================= */
+
+/* --- Hero shot scene: animates every <svg data-shot-scene> --- */
+function initShotScene(svg) {
+  const q = s => svg.querySelector(s);
+  const ball = q('.ss-ball'), spin = q('.ss-spin'), player = q('.ss-player'),
+        arm = q('.ss-arm'), arm2 = q('.ss-arm2'), net = q('.ss-net'),
+        swish = q('.ss-swish'), shadow = q('.ss-shadow');
+
+  const LOOP = 2900, SH = { x: 80, y: 164 }, ARM = 32, RIM = { x: 310, y: 112 };
+  const rad = d => d * Math.PI / 180, clamp = v => Math.max(0, Math.min(1, v)), lerp = (a, b, u) => a + (b - a) * u;
+  const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+
+  function jumpAt(t) { return t < 800 ? -24 * Math.sin(Math.PI * t / 800) : 0; }
+  function armAngle(t) {
+    if (t < 420)  return lerp(20, -72, ease(t / 420));          // load & shoot
+    if (t < 950)  return -72;                                   // follow-through
+    if (t < 1450) return lerp(-72, 20, ease((t - 950) / 500));  // arm comes down
+    return 20;
+  }
+  function hand(t, deg) {
+    const j = jumpAt(t);
+    return { x: SH.x + ARM * Math.cos(rad(deg)), y: SH.y + ARM * Math.sin(rad(deg)) + j };
+  }
+  const REL = (() => { const h = hand(420, -72); return { x: h.x + 3, y: h.y - 10 }; })();
+
+  function ballAt(t) {
+    if (t < 420) { const h = hand(t, armAngle(t)); return { x: h.x + 3, y: h.y - 10, o: 1, r: 0 }; }
+    if (t < 1500) {                                             // flight
+      const u = (t - 420) / 1080;
+      const x = lerp(REL.x, RIM.x, u);
+      const y = lerp(REL.y, RIM.y, u) - 95 * 4 * u * (1 - u);
+      return { x, y, o: 1, r: -u * 540 };
+    }
+    if (t < 1740) { const u = (t - 1500) / 240; return { x: RIM.x, y: lerp(RIM.y, 166, u * u), o: 1, r: -540 }; }       // through net
+    if (t < 2040) { const u = (t - 1740) / 300; return { x: lerp(310, 318, u), y: lerp(166, 258, u * u), o: 1, r: -560 }; } // drop
+    if (t < 2320) { const u = (t - 2040) / 280; return { x: lerp(318, 330, u), y: 258 - 26 * Math.sin(Math.PI * u), o: 1, r: -580 }; } // bounce
+    const u = clamp((t - 2320) / 420);
+    return { x: 330, y: 258, o: 1 - u, r: -580 };               // fade, then loop
+  }
+
+  function draw(t) {
+    const j = jumpAt(t), a = armAngle(t), h = hand(t, a);
+    player.setAttribute('transform', `translate(0 ${j})`);
+    // arm lines live inside the jumping group, so remove the jump offset
+    arm.setAttribute('x2', h.x); arm.setAttribute('y2', h.y - j);
+    const a2 = t < 420 ? a + 28 : lerp(-44, 40, clamp((t - 420) / 900));
+    arm2.setAttribute('x2', SH.x + 26 * Math.cos(rad(a2))); arm2.setAttribute('y2', SH.y + 26 * Math.sin(rad(a2)));
+    const s = 1 + j / 60; shadow.setAttribute('rx', 26 * s); shadow.setAttribute('opacity', .4 + .6 * s);
+
+    const b = ballAt(t);
+    ball.setAttribute('transform', `translate(${b.x} ${b.y})`);
+    ball.setAttribute('opacity', b.o);
+    spin.setAttribute('transform', `rotate(${b.r})`);
+
+    const n = t > 1500 && t < 1860 ? Math.sin(Math.PI * (t - 1500) / 360) : 0;
+    net.style.transform = `scale(${1 - 0.12 * n},${1 + 0.32 * n})`;
+
+    let sw = 0; if (t > 1540 && t < 2200) { const u = (t - 1540) / 660; sw = u < .2 ? u / .2 : u > .7 ? (1 - u) / .3 : 1; }
+    swish.setAttribute('opacity', sw);
+    swish.setAttribute('transform', `translate(230 70) scale(${.8 + .2 * Math.min(1, sw * 1.5)}) translate(-230 -70)`);
+  }
+
+  // Reduced motion: draw a single nice frame and stop.
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { draw(1600); return; }
+
+  let start = null, visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(svg); // pause off-screen
+  (function frame(now) {
+    if (start === null) start = now;
+    if (visible) draw((now - start) % LOOP);
+    requestAnimationFrame(frame);
+  })(performance.now());
+}
+
+/* --- Submit button: bouncing-ball loader --- */
+const BALL_SVG = '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#E8742A" stroke="#1b1b1b" stroke-width="6"/><g fill="none" stroke="#1b1b1b" stroke-width="6"><line x1="50" y1="4" x2="50" y2="96"/><line x1="4" y1="50" x2="96" y2="50"/><path d="M18 16 Q38 50 18 84"/><path d="M82 16 Q62 50 82 84"/></g></svg>';
+function setButtonLoading(btn, loading, text = "Submitting…") {
+  if (loading) {
+    btn.dataset.label = btn.innerHTML;   // remember the original label
+    btn.disabled = true;
+    btn.innerHTML = `<span class="ball-loader">${BALL_SVG}</span>${esc(text)}`;
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = btn.dataset.label || btn.innerHTML;
+  }
+}
+
+/* --- Success screen: Ghana-colours confetti + mini basketballs --- */
+function fireConfetti(duration = 3200) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c = document.createElement("canvas"), ctx = c.getContext("2d"), dpr = window.devicePixelRatio || 1;
+  Object.assign(c.style, { position: "fixed", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 9999 });
+  document.body.appendChild(c);
+  const resize = () => { c.width = innerWidth * dpr; c.height = innerHeight * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+  resize();
+  const colors = ["#CE1126", "#FCD116", "#006B3F", "#ffffff", "#111111"];
+  const parts = Array.from({ length: 160 }, (_, i) => ({
+    x: innerWidth / 2 + (Math.random() - .5) * 80, y: innerHeight * .35,
+    vx: (Math.random() - .5) * 14, vy: -Math.random() * 14 - 4,
+    w: 6 + Math.random() * 6, h: 8 + Math.random() * 8, r: Math.random() * 6, vr: (Math.random() - .5) * .3,
+    color: colors[i % colors.length], ball: i % 14 === 0
+  }));
+  const t0 = performance.now();
+  (function tick(now) {
+    const el = now - t0; ctx.clearRect(0, 0, innerWidth, innerHeight);
+    ctx.globalAlpha = el > duration - 600 ? Math.max(0, (duration - el) / 600) : 1;
+    for (const p of parts) {
+      p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+      if (p.ball) {
+        ctx.fillStyle = "#E8742A"; ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = "#1b1b1b"; ctx.lineWidth = 1.3; ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(8, 0); ctx.moveTo(0, -8); ctx.lineTo(0, 8); ctx.stroke();
+      } else { ctx.fillStyle = p.color; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); }
+      ctx.restore();
+    }
+    if (el < duration) requestAnimationFrame(tick); else c.remove();
+  })(t0);
+}
+
+/* --- Scroll reveal: fade sections up as they enter view --- */
+function setupReveal() {
+  // Add the reveal class via JS so JS-off users still see everything.
+  const els = $$("#formView .hero-scene, #formView .card, #confirmView .card, #reviewView .card");
+  els.forEach(e => e.classList.add("reveal"));
+  if (!("IntersectionObserver" in window)) { els.forEach(e => e.classList.add("is-visible")); return; }
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add("is-visible"); io.unobserve(e.target); }
+  }), { threshold: .12 });
+  els.forEach(e => io.observe(e));
+}
+
 /* ======================= Wire everything up ======================= */
 document.addEventListener("DOMContentLoaded", () => {
   applyConfig();
@@ -1045,6 +1304,10 @@ document.addEventListener("DOMContentLoaded", () => {
   setupCopy();
   setupAutofill();
   loadCounter();
+
+  // Start the animations
+  $$("[data-shot-scene]").forEach(initShotScene);
+  setupReveal();
 
   // Default the payment date to today for convenience.
   const today = new Date().toISOString().slice(0, 10);
